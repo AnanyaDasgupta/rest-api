@@ -22,17 +22,6 @@ A simple REST API webserver that demonstrates:
 - `PUT /api/v1/students/<id>`
 - `DELETE /api/v1/students/<id>`
 
-## How the app connects to the database
-1. `create_app()` loads environment variables (including `.env` in local dev).  
-2. `Config.SQLALCHEMY_DATABASE_URI` reads `DATABASE_URL` (falls back to `sqlite:///students.db`).  
-3. `db.init_app(app)` initializes Flask-SQLAlchemy with that URI.  
-4. API handlers use the shared SQLAlchemy session (`db.session`) for CRUD operations.  
-5. Alembic migrations also read `DATABASE_URL` (and `.env`) so schema changes target the same DB.
-
-Examples:
-- SQLite (local default): `DATABASE_URL=sqlite:///students.db`
-- Postgres: `DATABASE_URL=postgresql+psycopg://user:password@localhost:5432/students`
-
 ## Project Setup
 
 ### 1) Clone the repository

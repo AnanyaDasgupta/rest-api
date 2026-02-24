@@ -2,20 +2,15 @@ from logging.config import fileConfig
 import os
 
 from alembic import context
-from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
-from app.extensions import db
 from app.models import Student  # noqa: F401
+from app.extensions import db
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-
-# Keep Alembic in sync with app runtime config resolution.
-load_dotenv()
 
 
 def get_database_url():
