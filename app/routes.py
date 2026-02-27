@@ -51,7 +51,7 @@ def list_students():
 
 @api.get("/students/<int:student_id>")
 def get_student(student_id):
-    student = db.session.get(Student, student_id)
+    student = Student.query.get(student_id)
     if student is None:
         current_app.logger.warning("Student id=%s not found", student_id)
         return jsonify({"error": "Student not found"}), 404
@@ -62,7 +62,7 @@ def get_student(student_id):
 
 @api.put("/students/<int:student_id>")
 def update_student(student_id):
-    student = db.session.get(Student, student_id)
+    student = Student.query.get(student_id)
     if student is None:
         current_app.logger.warning("Student id=%s not found for update", student_id)
         return jsonify({"error": "Student not found"}), 404
@@ -85,7 +85,7 @@ def update_student(student_id):
 
 @api.delete("/students/<int:student_id>")
 def delete_student(student_id):
-    student = db.session.get(Student, student_id)
+    student = Student.query.get(student_id)
     if student is None:
         current_app.logger.warning("Student id=%s not found for delete", student_id)
         return jsonify({"error": "Student not found"}), 404

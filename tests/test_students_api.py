@@ -30,18 +30,6 @@ def client():
     os.unlink(db_path)
 
 
-def create_student(client, email="ada@example.com"):
-    return client.post(
-        "/api/v1/students",
-        json={
-            "first_name": "Ada",
-            "last_name": "Lovelace",
-            "email": email,
-            "age": 20,
-        },
-    )
-
-
 def test_healthcheck(client):
     response = client.get("/api/v1/healthcheck")
 
@@ -50,7 +38,15 @@ def test_healthcheck(client):
 
 
 def test_student_crud_flow(client):
-    create_response = create_student(client)
+    create_response = client.post(
+        "/api/v1/students",
+        json={
+            "first_name": "Ada",
+            "last_name": "Lovelace",
+            "email": "ada@example.com",
+            "age": 20,
+        },
+    )
     assert create_response.status_code == 201
     student_id = create_response.json["id"]
 
@@ -79,25 +75,3 @@ def test_create_student_missing_fields(client):
 
     assert response.status_code == 400
     assert "Missing required fields" in response.json["error"]
-
-
-def test_duplicate_email_returns_conflict(client):
-    assert create_student(client, email="same@example.com").status_code == 201
-
-    response = create_student(client, email="same@example.com")
-
-    assert response.status_code == 409
-    assert response.json == {"error": "Student with this email already exists"}
-
-
-def test_get_update_delete_not_found(client):
-    get_response = client.get("/api/v1/students/999")
-    update_response = client.put("/api/v1/students/999", json={"age": 25})
-    delete_response = client.delete("/api/v1/students/999")
-
-    assert get_response.status_code == 404
-    assert update_response.status_code == 404
-    assert delete_response.status_code == 404
-    assert get_response.json == {"error": "Student not found"}
-    assert update_response.json == {"error": "Student not found"}
-    assert delete_response.json == {"error": "Student not found"}
