@@ -1,14 +1,11 @@
 from logging.config import fileConfig
 import os
-from pathlib import Path
 
 from alembic import context
-from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
-from app.db_url import normalize_database_url
-from app.extensions import db
 from app.models import Student  # noqa: F401
+from app.extensions import db
 
 config = context.config
 
@@ -16,14 +13,8 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
-# Keep Alembic in sync with app runtime config resolution.
-load_dotenv()
-
-
 def get_database_url():
-    base_dir = Path(__file__).resolve().parent.parent
-    raw_url = os.getenv("DATABASE_URL", config.get_main_option("sqlalchemy.url"))
-    return normalize_database_url(raw_url, base_dir)
+    return os.getenv("DATABASE_URL", config.get_main_option("sqlalchemy.url"))
 
 
 target_metadata = db.metadata
